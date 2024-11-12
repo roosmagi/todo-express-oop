@@ -18,6 +18,10 @@ class todoController {
             message: 'created new todo object',
             newTask: newTodo
         })
+    }
+    
+    getTodos(req, res){
+        res.json({tasks: this.TODOS})
     } 
 } 
 
