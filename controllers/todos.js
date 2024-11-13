@@ -1,11 +1,12 @@
-import {Todo} from '../models/todo.js' 
+import {Todo} from '../models/todo.js';
+import { fileManager } from "./files.js";
 
 class todoController {
     constructor(){
         // hold todo ebjects in array
         this.TODOS = [] 
     } 
-    createTodo(req, res){
+    async createTodo(req, res){
         //get data from POST request
         const task = req.body.task
         // create new object via Todo model
@@ -13,12 +14,23 @@ class todoController {
         const newTodo = new Todo(Math.random().toString(), task)
         // add new todo to todos array
         this.TODOS.push(newTodo)
+        //save data to file
+        await fileManager.writeFile('./data/todos.json', this.TODOS)
         //create a correct response
         res.json({
             message: 'created new todo object',
             newTask: newTodo
         })
     }
+
+    async initTodos(){
+        const todosData = await fileManager.readFile('./data/todos.json')
+        if(todosData !== null){
+            this.TODOS = todosData
+        } else{
+            this.TODOS = []  
+        } 
+    } 
     
     getTodos(req, res){
         res.json({tasks: this.TODOS})
